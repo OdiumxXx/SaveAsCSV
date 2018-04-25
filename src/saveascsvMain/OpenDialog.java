@@ -42,7 +42,8 @@ public class OpenDialog extends JDialog {
     contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
     getContentPane().add(contentPanel, BorderLayout.CENTER);
     {
-      contentPanel.add(Label);      
+      contentPanel.add(Label);
+      Label.setText("Click 'Select Spreadsheet' and select the members database");
     }
     {
       JPanel buttonPane = new JPanel();
@@ -60,7 +61,7 @@ public class OpenDialog extends JDialog {
               selectedFile = fileChooser.getSelectedFile();
               filePath = selectedFile.getAbsolutePath().toString();
               System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-              Label.setText("Selected file: " + selectedFile.getAbsolutePath());
+              Label.setText("<html>Selected file:<br />"+ selectedFile.getAbsolutePath()+"<p>&nbsp</p><p>&nbsp</p>Click 'Create CSV File' to create the CSV file.<p>&nbsp<p />This window will close and a new 'memdraw.csv' will be created for you<br />in the same folder you opened this application from.<p>&nbsp</p>");
             }
 
           }
