@@ -11,6 +11,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
@@ -77,6 +80,8 @@ public class OpenDialog extends JDialog {
         okButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent arg0) {
             JFileChooser fileChooser = new JFileChooser();
+            FileFilter filter = new FileNameExtensionFilter("XLSX, XLS files", new String[] {"xlsx", "xls"});
+            fileChooser.setFileFilter(filter);
             File selectedFile = null;
             fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
             int result = fileChooser.showOpenDialog(okButton);

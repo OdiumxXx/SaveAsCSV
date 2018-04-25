@@ -1,4 +1,5 @@
 package saveascsvMain;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -13,8 +14,8 @@ import java.util.regex.Pattern;
 
 public class ApachePOIExcelRead {
   //private static final String FILE_NAME = "members.xls"; 
-  private static int ourSheet = 75;
-
+  private static int ourSheet = 965324;
+  
   // Our Text Area Editor (So we don't have to keep referring to saveascsvMain.etc.etc.etc) 
   private static void textAreaEditor(String s) {
     saveascsvMain.OpenDialog.textArea.append(s);
@@ -28,8 +29,25 @@ public class ApachePOIExcelRead {
       if (filePath == null) {
         textAreaEditor("\n  ERROR: You have not selected a spreadsheet.\n");
       }
-      FileInputStream excelFile = new FileInputStream(new File(filePath));
-      Workbook workbook = new XSSFWorkbook(excelFile);      
+      
+      
+      
+      File ourFile = new File(filePath);
+      FileInputStream excelFile = new FileInputStream(ourFile);
+      String ourFileName = ourFile.getName();
+      
+      // Compensate for working with different versions of spreadsheet 
+      Workbook workbook = null;      
+      if (ourFileName.endsWith(".xlsx")) {
+        System.out.println("- File ends with .xlsx (Excel Worksheet)"); // Excel Worksheet
+        textAreaEditor("- File ends with .xlsx - (Excel Worksheet)\n");
+        workbook = new XSSFWorkbook(excelFile);
+      } else if (ourFileName.endsWith(".xls")) { // 97-2003 Excel worksheet / OpenOfficeXML
+        workbook = new HSSFWorkbook(excelFile);
+        System.out.println("- File ends with .xls (97-2003 Excel worksheet / OpenOfficeXML)");
+        textAreaEditor("- File ends with .xls (97-2003 Excel worksheet / OpenOfficeXML)\n");
+      }
+            
       int sheetsNumberOf = workbook.getNumberOfSheets();  
 
       //Setup regex to find the spreadsheet we want to work with
@@ -48,6 +66,11 @@ public class ApachePOIExcelRead {
           System.out.println("    Checking sheet "+i+"...");
           textAreaEditor("    Checking sheet "+i+"...\n");
         }
+      }
+      
+      if (ourSheet == 965324) {
+        System.out.println("  Error: Did not find a spreadsheet with 'Consolidate' in the title");
+        textAreaEditor("\n  Error: Did not find a spreadsheet with 'Consolidate' in the title\n  Rename a sheet or try selecting a different file and try again.");        
       }
 
 
@@ -74,7 +97,7 @@ public class ApachePOIExcelRead {
             if (cellValue.contains("\n") == true) {
               cellValue = "Cell Value Contains NEWLINE - Fix your Spreadsheet!";
               System.out.print("*** REPLACED A NEW LINE ***");
-              textAreaEditor("\n*** WARNING: Cell Value Contains a linebreak. I have removed it for the CSV file, but you should fix your Spreadsheet! ***\n");
+              textAreaEditor("\n*** WARNING: Cell Value Contains a linebreak. I have removed it for the CSV file, but you should fix your Spreadsheet! ***\n\n");
             }
             sb.append(cellValue + ",");            
           } else if (currentCell.getCellTypeEnum() == CellType.NUMERIC) {                        
@@ -86,6 +109,7 @@ public class ApachePOIExcelRead {
         }
         // END ROW
         Entries++;         
+        System.out.println("");        
         textAreaEditor("\n");
         sb.append("\n");
       }
@@ -93,6 +117,7 @@ public class ApachePOIExcelRead {
       pw.write(sb.toString());
       pw.close();
       workbook.close();
+      ourSheet = 965324;
 
       // ADDITIONAL APPLET OUTPUT
       Entries--;
