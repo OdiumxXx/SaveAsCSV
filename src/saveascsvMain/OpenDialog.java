@@ -9,15 +9,29 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
+import javax.swing.JTextArea;
+import java.awt.Color;
+import java.awt.Component;
+import javax.swing.Box;
 
 @SuppressWarnings("serial")
 public class OpenDialog extends JDialog {
-  JLabel Label = new JLabel();  
+  JLabel Label = new JLabel(); 
+  static JTextArea textArea = new JTextArea();
+  static JScrollPane sp = new JScrollPane(textArea);
   String filePath;
   private final JPanel contentPanel = new JPanel();
+  private final JButton btnExit = new JButton("Close");
+  private final Component horizontalStrut = Box.createHorizontalStrut(525);
+
+  private static void updateTextArea(String insertText) {
+    textArea.append(insertText);
+  }
 
   /**
    * Launch the application.
@@ -36,18 +50,27 @@ public class OpenDialog extends JDialog {
    * Create the dialog.
    */
   public OpenDialog() {
-    setBounds(100, 100, 450, 300);
+    setBounds(400, 400, 900, 600);
     getContentPane().setLayout(new BorderLayout());
-    contentPanel.setLayout(new FlowLayout());
     contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
     getContentPane().add(contentPanel, BorderLayout.CENTER);
+    contentPanel.setLayout(new BorderLayout(0, 0));
     {
-      contentPanel.add(Label);
-      Label.setText("Click 'Select Spreadsheet' and select the members database");
+      Label.setHorizontalAlignment(SwingConstants.CENTER);
+      contentPanel.add(Label, BorderLayout.NORTH);
+      Label.setText("<html>Click 'Select Spreadsheet' and select the members database<p>&nbsp<p /><p>&nbsp<p /></html>");
     }
     {
+      textArea.setBackground(Color.WHITE);
+      textArea.setWrapStyleWord(true);
+      textArea.setEditable(false);
+      contentPanel.add(sp, BorderLayout.CENTER);
+    }
+
+
+    {
       JPanel buttonPane = new JPanel();
-      buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+      buttonPane.setLayout(new FlowLayout(FlowLayout.LEFT));
       getContentPane().add(buttonPane, BorderLayout.SOUTH);
       {
         JButton okButton = new JButton("Select Spreadsheet");
@@ -61,7 +84,8 @@ public class OpenDialog extends JDialog {
               selectedFile = fileChooser.getSelectedFile();
               filePath = selectedFile.getAbsolutePath().toString();
               System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-              Label.setText("<html>Selected file:<br />"+ selectedFile.getAbsolutePath()+"<p>&nbsp</p><p>&nbsp</p>Click 'Create CSV File' to create the CSV file.<p>&nbsp<p />This window will close and a new 'memdraw.csv' will be created for you<br />in the same folder you opened this application from.<p>&nbsp</p>");
+              textArea.setText("\n- Selected file: " + selectedFile.getAbsolutePath()+"\n\n");
+              updateTextArea("Click 'Create CSV File' to create the CSV file.\nA new 'memdraw.csv' will be created for you in the same folder you launched this application from.\n\n");
             }
 
           }
@@ -76,11 +100,21 @@ public class OpenDialog extends JDialog {
         createCSVButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent arg0) {
             saveascsvMain.ApachePOIExcelRead.main(filePath);
-            setVisible(false);
           }
         });
         createCSVButton.setActionCommand("Create CSV File");        
         buttonPane.add(createCSVButton);
+      }
+      {
+        buttonPane.add(horizontalStrut);
+      }
+      {
+        btnExit.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent arg0) {
+            System.exit(0);
+          }
+        });
+        buttonPane.add(btnExit);
       }
     }
   }
