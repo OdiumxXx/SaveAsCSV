@@ -12,10 +12,11 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ApachePOIExcelRead {
-  //private static final String FILE_NAME = "members.xls"; 
+public class ApachePOIExcelRead {   
+
   private static int ourSheet = 965324;
-  
+  static String ourTitle = "Consolidate";
+
   // Our Text Area Editor (So we don't have to keep referring to saveascsvMain.etc.etc.etc) 
   private static void textAreaEditor(String s) {
     saveascsvMain.OpenDialog.textArea.append(s);
@@ -51,16 +52,16 @@ public class ApachePOIExcelRead {
       int sheetsNumberOf = workbook.getNumberOfSheets();  
 
       //Setup regex to find the spreadsheet we want to work with
-      Pattern p = Pattern.compile("Consolidate");   // the pattern to search for
-      System.out.println("- Checking all sheets in workbook for one with 'Consolidate' in the title....");
-      textAreaEditor("- Checking all sheets in workbook for one with 'Consolidate' in the title....\n");
+      Pattern p = Pattern.compile(ourTitle);   // the pattern to search for
+      System.out.println("- Checking all sheets in workbook for one with '"+ourTitle+"' in the title....");
+      textAreaEditor("- Checking all sheets in workbook for one with '"+ourTitle+"' in the title....\n");
       // for each sheet, search for the regex pattern 'p' if the matcher makes a find of that pattern, set that to be 'ourSheet' and tell everyone about it!
       for(int i = 0; i < sheetsNumberOf; i++) {   
         String sheetName = workbook.getSheetName(i);
         Matcher m = p.matcher(sheetName);  
         if (m.find()) {
-          System.out.println("    Found Spreadsheet with phrase 'Consolidate'");
-          textAreaEditor("    Found Spreadsheet with phrase 'Consolidate'\n");
+          System.out.println("    Found Spreadsheet with phrase '"+ourTitle+"'");
+          textAreaEditor("    Found Spreadsheet with phrase '"+ourTitle+"'\n");
           ourSheet = i;
         }  else {
           System.out.println("    Checking sheet "+i+"...");
@@ -69,8 +70,8 @@ public class ApachePOIExcelRead {
       }
       
       if (ourSheet == 965324) {
-        System.out.println("  Error: Did not find a spreadsheet with 'Consolidate' in the title");
-        textAreaEditor("\n  Error: Did not find a spreadsheet with 'Consolidate' in the title\n  Rename a sheet or try selecting a different file and try again.");        
+        System.out.println("  Error: Did not find a spreadsheet with '"+ourTitle+"' in the title");
+        textAreaEditor("\n  Error: Did not find a spreadsheet with '"+ourTitle+"' in the title\n  Rename a sheet or try selecting a different file and try again.\n");        
       }
 
 
@@ -80,7 +81,7 @@ public class ApachePOIExcelRead {
       PrintWriter pw = new PrintWriter(new File("memdraw.csv"));
       StringBuilder sb = new StringBuilder();
       int Entries = 0;
-      textAreaEditor("- Consolidate Members Sheet found!\n- Creating CSV...\n---------------------------------------\n");
+      textAreaEditor("-  '"+ourTitle+"'  Members Sheet found!\n- Creating CSV...\n---------------------------------------\n");
 
       while (iterator.hasNext()) {
         Row currentRow = iterator.next();

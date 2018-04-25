@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
@@ -21,6 +22,7 @@ import javax.swing.JTextArea;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.Box;
+import java.awt.Font;
 
 @SuppressWarnings("serial")
 public class OpenDialog extends JDialog {
@@ -31,6 +33,8 @@ public class OpenDialog extends JDialog {
   private final JPanel contentPanel = new JPanel();
   private final JButton btnExit = new JButton("Close");
   private final Component horizontalStrut = Box.createHorizontalStrut(525);
+  private final JPanel panel = new JPanel();
+  private final JButton btnAdvanced = new JButton("Advanced");
 
   private static void updateTextArea(String insertText) {
     textArea.append(insertText);
@@ -68,6 +72,35 @@ public class OpenDialog extends JDialog {
       textArea.setWrapStyleWord(true);
       textArea.setEditable(false);
       contentPanel.add(sp, BorderLayout.CENTER);
+    }
+   
+    // Add our toolbar
+    {
+      FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+      flowLayout.setAlignment(FlowLayout.LEFT);
+      getContentPane().add(panel, BorderLayout.NORTH);
+    }    
+    // add our preferences button
+    {
+      panel.add(btnAdvanced);
+      btnAdvanced.setFont(new Font("Tahoma", Font.PLAIN, 11));
+      btnAdvanced.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent arg0) {
+          
+          String m = JOptionPane.showInputDialog(null, "Advanced Use Only:\nSearch for a different Sheet Title?", "Consolidate");
+          
+          if (m == null || m == "" || m == "\n") {
+            // do nothing
+            System.out.println("Title remains: "+saveascsvMain.ApachePOIExcelRead.ourTitle);
+            updateTextArea("\n*** Title remains: "+saveascsvMain.ApachePOIExcelRead.ourTitle+"\n");
+          } else {
+            // change title we are looking for (ourTitle)
+            System.out.println("Title set to: "+m);
+            updateTextArea("\n*** Title set to: "+m+"\n");
+            saveascsvMain.ApachePOIExcelRead.ourTitle = m;
+          }
+        }
+      });
     }
 
 
