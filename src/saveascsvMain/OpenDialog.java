@@ -23,6 +23,9 @@ import java.awt.Color;
 import java.awt.Component;
 import javax.swing.Box;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.Cursor;
+import java.awt.Insets;
 
 @SuppressWarnings("serial")
 public class OpenDialog extends JDialog {
@@ -32,7 +35,7 @@ public class OpenDialog extends JDialog {
   String filePath;
   private final JPanel contentPanel = new JPanel();
   private final JButton btnExit = new JButton("Close");
-  private final Component horizontalStrut = Box.createHorizontalStrut(525);
+  private final Component horizontalStrut = Box.createHorizontalStrut(540);
   private final JPanel panel = new JPanel();
   private final JButton btnAdvanced = new JButton("Advanced");
 
@@ -47,6 +50,7 @@ public class OpenDialog extends JDialog {
     try {
       OpenDialog dialog = new OpenDialog();
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      dialog.setLocationRelativeTo(null);
       dialog.setVisible(true);
     } catch (Exception e) {
       e.printStackTrace();
@@ -57,6 +61,11 @@ public class OpenDialog extends JDialog {
    * Create the dialog.
    */
   public OpenDialog() {
+    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    setFont(new Font("Dialog", Font.PLAIN, 16));
+    setIconImage(Toolkit.getDefaultToolkit().getImage(OpenDialog.class.getResource("/saveascsvMain/pixel-ghost-blue-128x128.png")));
+    setType(Type.UTILITY);
+    setTitle("Save as CSV");
     setBounds(400, 400, 900, 600);
     getContentPane().setLayout(new BorderLayout());
     contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -82,8 +91,10 @@ public class OpenDialog extends JDialog {
     }    
     // add our preferences button
     {
+      btnAdvanced.setForeground(Color.DARK_GRAY);
+      btnAdvanced.setMargin(new Insets(2, 2, 2, 2));
       panel.add(btnAdvanced);
-      btnAdvanced.setFont(new Font("Tahoma", Font.PLAIN, 11));
+      btnAdvanced.setFont(new Font("Tahoma", Font.PLAIN, 10));
       btnAdvanced.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent arg0) {
           
@@ -106,10 +117,12 @@ public class OpenDialog extends JDialog {
 
     {
       JPanel buttonPane = new JPanel();
-      buttonPane.setLayout(new FlowLayout(FlowLayout.LEFT));
+      FlowLayout fl_buttonPane = new FlowLayout(FlowLayout.LEFT);
+      buttonPane.setLayout(fl_buttonPane);
       getContentPane().add(buttonPane, BorderLayout.SOUTH);
       {
         JButton okButton = new JButton("Select Spreadsheet");
+        okButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
         okButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent arg0) {
             JFileChooser fileChooser = new JFileChooser();
@@ -135,6 +148,7 @@ public class OpenDialog extends JDialog {
       }
       {
         JButton createCSVButton = new JButton("Create CSV File");
+        createCSVButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
         createCSVButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent arg0) {
             saveascsvMain.ApachePOIExcelRead.main(filePath);
@@ -147,6 +161,8 @@ public class OpenDialog extends JDialog {
         buttonPane.add(horizontalStrut);
       }
       {
+        btnExit.setHorizontalAlignment(SwingConstants.RIGHT);
+        btnExit.setFont(new Font("Tahoma", Font.PLAIN, 12));
         btnExit.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent arg0) {
             System.exit(0);
