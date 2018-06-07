@@ -11,6 +11,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -93,8 +95,13 @@ public class ApachePOIExcelRead {
       // Now we have the spreadsheet to work with, it's time to iterate through
       // it and create our CSV
       Sheet datatypeSheet = workbook.getSheetAt(ourSheet);
-      Iterator<Row> Rowiterator = datatypeSheet.iterator();      
-      PrintWriter pw = new PrintWriter(new File("memdraw.csv"));
+      Iterator<Row> Rowiterator = datatypeSheet.iterator();  
+      //Setup Date for the filename
+      SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy");
+      Date date = new Date();  
+      String formattedDate = formatter.format(date);
+      // Create the file to write to
+      PrintWriter pw = new PrintWriter(new File("memdraw_"+formattedDate+".csv"));      
       StringBuilder sb = new StringBuilder();
       int Entries = 0;
       int col = datatypeSheet.getRow(0).getLastCellNum();
